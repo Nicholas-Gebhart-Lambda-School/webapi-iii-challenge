@@ -1,21 +1,20 @@
 const express = require("express");
-
 const server = express();
+const userRouter = require("./users/userRouter");
+const postsRouter = require("./posts/postRouter");
+
+const logger = require("./middleware/logger");
+
+// Global
 server.use(logger("Logger"));
+server.use(express.json());
+
+// User routes
+server.use("/api/posts", postsRouter);
+server.use("/api/users", userRouter);
 
 server.get("/", (req, res) => {
   res.send(`<h2>Let's write some middleware!</h2>`);
 });
-
-//custom middleware
-
-function logger(prefix) {
-  return (req, res, next) => {
-    const { url, method } = req;
-    const time = new Date().toISOString();
-    console.log(`${prefix}: [${time}] ${method} to ${url}`);
-    next();
-  };
-}
 
 module.exports = server;
